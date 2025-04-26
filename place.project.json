@@ -41,8 +41,7 @@
 		"ServerScriptService": {
 			"$className": "ServerScriptService",
 			"Server": {
-				"$className": "Script",
-				"$path": "place/Server.luau",
+				"$path": "place/Server.server.luau",
                 "Robo Minimap": {
                     "$path": "default.project.json"
                 }
@@ -53,8 +52,7 @@
 			"StarterPlayerScripts": {
 				"$className": "StarterPlayerScripts",
 				"client": {
-					"$className": "LocalScript",
-					"$path": "place/Client.luau"
+					"$path": "place/Client.client.luau"
 				}
 			}
 		},
