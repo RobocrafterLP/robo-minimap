@@ -1,0 +1,6 @@
+{
+	"name": "Robo Minimap",
+	"tree": {
+		"$path": "src"
+	}
+}

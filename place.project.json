@@ -1,0 +1,67 @@
+{
+	"name": "robo-minimap-place",
+	"globIgnorePaths": ["**/package.json", "**/tsconfig.json"],
+	"tree": {
+		"$className": "DataModel",
+		"Workspace": {
+			"$properties": {
+				"FilteringEnabled": true
+			},
+			"Baseplate": {
+				"$className": "Part",
+				"$properties": {
+					"BottomSurface": "Smooth",
+					"CFrame": {
+						"CFrame": {
+							"position": [-0, -8, 0],
+							"orientation": [
+								[1, 0, 0],
+								[0, 1, 0],
+								[0, 0, 1]
+							]
+						}
+					},
+					"Color": [0.356862, 0.356862, 0.356862],
+					"Size": [2048, 16, 2048],
+					"TopSurface": "Smooth"
+				},
+                "Texture": {
+                    "$className": "Texture",
+                    "$properties": {
+                        "Color3": [0, 0, 0],
+                        "Face": "Top",
+                        "StudsPerTileU": 8,
+                        "StudsPerTileV": 8,
+                        "Texture": "rbxassetid://6372755229",
+                        "Transparency": 0.800000
+                    }
+                }
+			}
+		},
+		"ServerScriptService": {
+			"$className": "ServerScriptService",
+			"Server": {
+				"$className": "Script",
+				"$path": "place/Server.luau",
+                "Robo Minimap": {
+                    "$path": "default.project.json"
+                }
+			}
+		},
+		"StarterPlayer": {
+			"$className": "StarterPlayer",
+			"StarterPlayerScripts": {
+				"$className": "StarterPlayerScripts",
+				"client": {
+					"$className": "LocalScript",
+					"$path": "place/Client.luau"
+				}
+			}
+		},
+        "TextChatService": {
+            "$properties": {
+				"ChatVersion": "TextChatService"
+			}
+        }
+	}
+}
