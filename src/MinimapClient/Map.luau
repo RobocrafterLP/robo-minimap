@@ -92,6 +92,17 @@ function MapClass:MarkerById(Id)
 	end
 end
 
+function MapClass:GetSize(relativeFocus)
+	local MapFrame = self.MapFrame
+	local MapView = MapFrame.MapView
+	local MapImage = MapView.RotateFrame.MapImage
+
+	return Vector2.new(
+		(MapView.AbsoluteSize.X * 0.5 - MapImage.AbsoluteSize.X * (relativeFocus.X)) + MapImage.AbsoluteSize.X * MapImage.AnchorPoint.X,
+		(MapView.AbsoluteSize.Y * 0.5 - MapImage.AbsoluteSize.Y * (relativeFocus.Y)) + MapImage.AbsoluteSize.Y * MapImage.AnchorPoint.Y
+	)
+end
+
 function MapClass:Update()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
 	if not Character or not Character.PrimaryPart then return end
@@ -160,25 +171,19 @@ function MapClass:Update()
 		self.Rotation = GuiSettings.RotateWithCamera and math.deg(ry) or 0
 		MapView.RotateFrame.Rotation = self.Rotation
 		
-		local Size = Vector2.new(
-			(MapView.AbsoluteSize.X * 0.5 - MapImage.AbsoluteSize.X * (relativeFocus.X)) + MapImage.AbsoluteSize.X * MapImage.AnchorPoint.X,
-			(MapView.AbsoluteSize.Y * 0.5 - MapImage.AbsoluteSize.Y * (relativeFocus.Y)) + MapImage.AbsoluteSize.Y * MapImage.AnchorPoint.Y
-		)
+		local Size = self:GetSize(relativeFocus)
 		
 		MapImage.Position = UDim2.new(
-			0, Size.X,
+			0, Size.X, 
 			0, Size.Y
 		)
 		
 	else
-		local Size = Vector2.new(
-			(MapView.AbsoluteSize.X * 0.5 - MapImage.AbsoluteSize.X * (relativeFocus.X)) + MapImage.AbsoluteSize.X * MapImage.AnchorPoint.X,
-			(MapView.AbsoluteSize.Y * 0.5 - MapImage.AbsoluteSize.Y * (relativeFocus.Y)) + MapImage.AbsoluteSize.Y * MapImage.AnchorPoint.Y
-		)
+		local Size = self:GetSize(relativeFocus)
 		
 		MapImage.Position = MapDragedUDim ~= UDim2.new(0,0,0,0) and MapDragedUDim or 
 			UDim2.new(
-				0, Size.X,
+				0, Size.X, 
 				0, Size.Y
 			)
 

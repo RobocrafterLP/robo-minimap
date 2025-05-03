@@ -91,13 +91,18 @@ function Marker:UpdatePosition()
 		elseif obj:IsA("Model") and obj.PrimaryPart then
 			rotatedVector3 = Vector3.new(rotatedWorldX, newpos.Y, rotatedWorldZ)
 		end
-
+		
+		self.IDK.Position = Utils.Vector2ToUDim2Offset(MapData.Convert:ToMap2(newpos))
 		if Settings.SnapToBorder == true and MapData.IsMinimap then
 			Visible = true
-			Pos = MapData.Convert:ToMap(rotatedVector3)
-			Pos = BorderSnap:ClampToBorder(Pos, map.AbsoluteSize, MapData.Settings.Gui.Minimap.CornerRadius)
+			if MapData.NorthMarker and MapData.NorthMarker == self then
+				Pos = MapData.Convert:ToMap(rotatedVector3)
+				Pos = BorderSnap:ClampToBorder(Pos, MapData.MapFrame.MarkerView.AbsoluteSize, MapData.Settings.Gui.Minimap.CornerRadius)
+			else
+				Pos = BorderSnap:ClampToBorder(self.IDK.AbsolutePosition - MapData.MapFrame.MarkerView.AbsolutePosition, MapData.MapFrame.MarkerView.AbsoluteSize, MapData.Settings.Gui.Minimap.CornerRadius)
+			end
 		else
-			local n = BorderSnap:ClampToBorder(Pos, map.AbsoluteSize, MapData.Settings.Gui.Minimap.CornerRadius)
+			local n = BorderSnap:ClampToBorder(MapData.Convert:ToMap2(newpos), MapData.MapFrame.MarkerView.AbsoluteSize, MapData.Settings.Gui.Minimap.CornerRadius)
 			if n.X ~= Pos.X or n.Y ~= Pos.Y then
 				Visible = false
 			elseif self.Gui.Visible == false then
@@ -400,7 +405,7 @@ function Marker:GUI()
 	root:render(React.createElement(Render))
 
 	repeat task.wait() until #CollectionService:GetTagged(Id) == 1
-
+	self.IDK.Parent = MapImage
 	return CollectionService:GetTagged(Id)[1]
 end
 
@@ -414,7 +419,10 @@ return function(MapData: Types.MapClass, Settings: Types.Tag, instacne: Types.in
 	self.Settings = Settings
 	self.obj = instacne
 	self.Type = Type
+	local IDK = Instance.new("Frame")
+	IDK.BackgroundTransparency = 1
+	IDK.Size = UDim2.fromScale(0,0)
+	self.IDK = IDK
 	self.Gui = self:GUI()
-
 	return self
 end

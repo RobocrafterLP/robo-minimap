@@ -56,12 +56,15 @@ function ConvertPosition:ToMap(Position)
 	local MapImage = MapView.RotateFrame.MapImage
 
 	local mapSize = MapImage.AbsoluteSize
-	local mapPos = MapImage.Position
-	local mapAnchor = mapSize * MapImage.AnchorPoint
+	local mapPosition = MapImage.Position
+	local mapAnchor = MapImage.AnchorPoint
 
-	local MapSettings =  MapData.Settings.MapData[MapData.CurrentMap]
-	local x = ( ( Position.X + MapSettings.Map.Size.X / 2 ) / MapSettings.Map.Size.X * mapSize.X + mapPos.X.Offset ) - mapSize.X * MapImage.AnchorPoint.X
-	local y = ( ( Position.Z + MapSettings.Map.Size.Y / 2 ) / MapSettings.Map.Size.Y * mapSize.Y + mapPos.Y.Offset ) - mapSize.Y * MapImage.AnchorPoint.Y
+	local MapSettings = MapData.Settings.MapData[MapData.CurrentMap]
+	local mapSettingsSize = MapSettings.Map.Size
+
+	local x = ((Position.X + mapSettingsSize.X / 2) / mapSettingsSize.X * mapSize.X + mapPosition.X.Offset) - mapSize.X * mapAnchor.X
+	local y = ((Position.Z + mapSettingsSize.Y / 2) / mapSettingsSize.Y * mapSize.Y + mapPosition.Y.Offset) - mapSize.Y * mapAnchor.Y
+
 	return Vector2.new(x, y)
 end
 
@@ -74,8 +77,6 @@ function ConvertPosition:ToMap2(Position)
 
 	local MapSettings = MapData.Settings.MapData[MapData.CurrentMap]
 	local mapSize = MapImage.AbsoluteSize
-	local mapPos = MapImage.Position
-	local mapAnchorSize = mapSize * MapImage.AnchorPoint
 	local realSize = MapSettings.Map.Size/2
 
 	local x = Position.X + realSize.X
