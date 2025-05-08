@@ -3,16 +3,28 @@ site_url: https://robocrafterlp.github.io/robo-minimap
 repo_name: RobocrafterLP/robo-minimap
 repo_url: https://github.com/robocrafterlp/robo-minimap
 
+extra_css:
+    - stylesheets/extra.css
+
 theme:
   icon:
     logo: material/map
   name: material
   favicon: images/favicon.png
   features:
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+    - navigation.tracking
     - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.sections
-    - toc.integrate
+    - navigation.path
+    - navigation.prune
+    - navigation.indexes
     - navigation.top
+    - toc.follow
+    - toc.integrate
     - search.suggest
     - search.highlight
     - content.tabs.link
@@ -20,28 +32,24 @@ theme:
     - content.code.copy
   language: en
   palette:
-    - scheme: slate 
-      toggle:
-        icon: material/toggle-switch
-        name: Switch to light mode    
-      primary: deep purple
-      accent: lime
-    - scheme: default
-      toggle:
-        icon: material/toggle-switch-off-outline 
-        name: Switch to dark mode
-      primary: deep purple
-      accent: purple 
+    scheme: slate
+    primary: deep purple
+    accent: purple
 
 nav:
   - Home: index.md
-  # - API: api.md
+  - API: index copy.md
   # - Tutorial: tutorial/index.md
   # - Troubleshooting: troubleshooting/index.md
   # - DataStore Use: datause/index.md
   # - Developer Products: devproducts/index.md
 
+plugins:
+  - search
+
 markdown_extensions:
+  - attr_list
   - admonition
+  - pymdownx.details
   - pymdownx.highlight
   - pymdownx.superfences

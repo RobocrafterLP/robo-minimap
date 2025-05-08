@@ -1,4 +1,5 @@
 {
+	"servePort": 34873,
 	"name": "robo-minimap-place",
 	"globIgnorePaths": ["**/package.json", "**/tsconfig.json"],
 	"tree": {
