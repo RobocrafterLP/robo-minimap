@@ -4,10 +4,12 @@
 	"tree": {
 		"$className": "DataModel",
 		"Workspace": {
+			"$ignoreUnknownInstances": true,
 			"$properties": {
 				"FilteringEnabled": true
 			},
 			"Baseplate": {
+				"$ignoreUnknownInstances": true,
 				"$className": "Part",
 				"$properties": {
 					"BottomSurface": "Smooth",
@@ -25,31 +27,36 @@
 					"Size": [2048, 16, 2048],
 					"TopSurface": "Smooth"
 				},
-                "Texture": {
-                    "$className": "Texture",
-                    "$properties": {
-                        "Color3": [0, 0, 0],
-                        "Face": "Top",
-                        "StudsPerTileU": 8,
-                        "StudsPerTileV": 8,
-                        "Texture": "rbxassetid://6372755229",
-                        "Transparency": 0.800000
-                    }
-                }
+				"Texture": {
+					"$ignoreUnknownInstances": true,
+					"$className": "Texture",
+					"$properties": {
+						"Color3": [0, 0, 0],
+						"Face": "Top",
+						"StudsPerTileU": 8,
+						"StudsPerTileV": 8,
+						"Texture": "rbxassetid://6372755229",
+						"Transparency": 0.8
+					}
+				}
 			}
 		},
 		"ServerScriptService": {
+			"$ignoreUnknownInstances": true,
 			"$className": "ServerScriptService",
 			"Server": {
+				"$ignoreUnknownInstances": true,
 				"$path": "place/Server.server.luau",
-                "Robo Minimap": {
-                    "$path": "default.project.json"
-                }
+				"Robo Minimap": {
+					"$path": "default.project.json"
+				}
 			}
 		},
 		"StarterPlayer": {
+			"$ignoreUnknownInstances": true,
 			"$className": "StarterPlayer",
 			"StarterPlayerScripts": {
+				"$ignoreUnknownInstances": true,
 				"$className": "StarterPlayerScripts",
 				"client": {
 					"$path": "place/Client.client.luau"
@@ -57,9 +64,10 @@
 			}
 		},
         "TextChatService": {
-            "$properties": {
+			"$ignoreUnknownInstances": true,
+			"$properties": {
 				"ChatVersion": "TextChatService"
 			}
-        }
+		}
 	}
 }
