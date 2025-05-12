@@ -6,8 +6,8 @@ ConvertPosition.__index = ConvertPosition
 
 function ConvertPosition:ToWorld(Position)
 	local MapData = self.MapData
-	local MapFrame = MapData.MapFrame
-	local MapView = MapFrame.MapView
+	print(MapData)
+	local MapView = MapData.MapView
 	local MapImage = MapView.RotateFrame.MapImage
 
 	local mapSize = MapImage.AbsoluteSize
@@ -50,8 +50,8 @@ end
 
 function ConvertPosition:ToMap(Position)
 	local MapData = self.MapData
-	local MapScreen = MapData.Map
 	local MapFrame = MapData.MapFrame
+	
 	local MapView = MapFrame.MapView
 	local MapImage = MapView.RotateFrame.MapImage
 
@@ -70,8 +70,7 @@ end
 
 function ConvertPosition:ToMap2(Position)
 	local MapData = self.MapData
-	local MapScreen = MapData.Map
-	local MapFrame = MapScreen.MapFrame
+	local MapFrame = MapData.MapFrame
 	local MapView = MapFrame.MapView
 	local MapImage = MapView.RotateFrame.MapImage
 
