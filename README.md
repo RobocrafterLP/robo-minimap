@@ -19,12 +19,9 @@ Ensure latest npm and Rojo is installed
     ```sh
     npm install
     ```
-3. 1. Either build it into place file, or serve it
+3. Either build it into place file, or serve it, or build it into file
     ```sh
     npm run build:place
     npm run serve
-    ```
-3. 2. or Either build it into file
-    ```sh
-      npm run build
+    npm run build
     ```
