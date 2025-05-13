@@ -52,9 +52,21 @@ local Settings: Types.Settings = {
 		sample = {
 			Map = {
 				Size = Vector2.new(12000, 12000), --In Studs
-				ImageId = 17001033462,
-				Center = Vector2.new(-0,0)
+				Center = Vector2.new(-0,0),
+				ImageId = 105854818766254,
 			},
+			--[[ -- this is if you slice your image in 4 or 9 or 16 or 25 images
+			Map = {
+				Size = Vector2.new(12000, 12000), --In Studs
+				Center = Vector2.new(-0,0),
+				Images = {
+					{ ImageId = 105854818766254, LayoutOrder = 1, },
+					{ ImageId = 105854818766254, LayoutOrder = 2, },
+					{ ImageId = 105854818766254, LayoutOrder = 3, },
+					{ ImageId = 105854818766254, LayoutOrder = 4, },
+				},
+			},
+			]]
 			Tags = {
 				{
 					DisplayName = "Dealership", --MarkerList DisplayName
@@ -133,9 +145,10 @@ local Settings: Types.Settings = {
 					ToolTipColor = Color3.fromRGB(255, 255, 255),
 					IconID = 16639425057, --iconid or for player = "PlayerHead" or "BlipIcon.Name" from provide Icons
 					ShapeColor = Color3.fromRGB(0, 0, 0),
+					ShapeID = 16041176746,
 					Color = Color3.fromRGB(255, 255, 255),
-					Size = UDim2.new(0.077, 0, 0.077, 0),
-					SnapToBorder = true,
+					Size = UDim2.new(0.077 * 4, 0, 0.077 * 4, 0),
+					SnapToBorder = false,
 					Rotate = false,
 					Index = 2,
 					VisibleType = "Minimap",

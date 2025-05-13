@@ -27,7 +27,7 @@ local MinimapSettings
 local MapClass = {} :: Types.MapClass
 MapClass.__index = MapClass
 
-function GetMarkerByIndex(List: {Types.MarkerClass}, Index)
+function GetMarkerByIndex(List: { Types.MarkerClass }, Index)
 	for _, class in List do
 		if class.Index == Index then
 			return class
@@ -52,8 +52,10 @@ function StringPathToArray(path)
 	return path_array
 end
 
-function GetParent(path: string | {string})
-	if path == nil then return end
+function GetParent(path: string | { string })
+	if path == nil then
+		return
+	end
 	local path_array = (type(path) == "string") and StringPathToArray(path) or path
 
 	local Data = Player.PlayerGui
@@ -85,7 +87,7 @@ function MapClass:Step()
 end
 
 function MapClass:MarkerById(Id)
-	for marker,class in self.Markers do
+	for marker, class in self.Markers do
 		if marker:GetAttribute("Id") ~= nil and marker:GetAttribute("Id") == Id then
 			return class
 		end
@@ -98,14 +100,18 @@ function MapClass:GetSize(relativeFocus)
 	local MapImage = MapView.RotateFrame.MapImage
 
 	return Vector2.new(
-		(MapView.AbsoluteSize.X * 0.5 - MapImage.AbsoluteSize.X * (relativeFocus.X)) + MapImage.AbsoluteSize.X * MapImage.AnchorPoint.X,
-		(MapView.AbsoluteSize.Y * 0.5 - MapImage.AbsoluteSize.Y * (relativeFocus.Y)) + MapImage.AbsoluteSize.Y * MapImage.AnchorPoint.Y
+		(MapView.AbsoluteSize.X * 0.5 - MapImage.AbsoluteSize.X * relativeFocus.X)
+			+ MapImage.AbsoluteSize.X * MapImage.AnchorPoint.X,
+		(MapView.AbsoluteSize.Y * 0.5 - MapImage.AbsoluteSize.Y * relativeFocus.Y)
+			+ MapImage.AbsoluteSize.Y * MapImage.AnchorPoint.Y
 	)
 end
 
 function MapClass:Update()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
-	if not Character or not Character.PrimaryPart then return end
+	if not Character or not Character.PrimaryPart then
+		return
+	end
 
 	local MapDragedUDim = self.MapDragedUDim
 	local Settings = self.Settings
@@ -116,16 +122,18 @@ function MapClass:Update()
 
 	local MapScreen = self.Map
 	local MapFrame = self.MapFrame
-	if not MapFrame:IsDescendantOf(Player.PlayerGui) then return end
+	if not MapFrame:IsDescendantOf(Player.PlayerGui) then
+		return
+	end
 	local MapView = MapFrame.MapView
 	local MarkerView = MapFrame.MarkerView
 	local MapImage = MapView.RotateFrame.MapImage
 	local UIScale = MapImage.UIScale
-	local AspectRatio = MapScreen.AbsoluteSize.X/MapScreen.AbsoluteSize.Y
+	local AspectRatio = MapScreen.AbsoluteSize.X / MapScreen.AbsoluteSize.Y
 
 	if self.IsMinimap then
 		local Center = Vector3.new(MapSettings.Map.Center.X, 0, MapSettings.Map.Center.Y)
-		local Pos = Character.PrimaryPart.Position - Center	
+		local Pos = Character.PrimaryPart.Position - Center
 		local Focus = self.Convert:ToMap2(Pos)
 		self.mapView.FocusX = Focus.X
 		self.mapView.FocusY = Focus.Y
@@ -139,7 +147,7 @@ function MapClass:Update()
 		if self.NorthMarker then
 			self.NorthMarker:SetVisible(true)
 		end
-		for i,v in self.UICorner do
+		for i, v in self.UICorner do
 			v.CornerRadius = GuiMinimap.CornerRadius
 		end
 		MapFrame.MarkerList.Visible = false
@@ -157,7 +165,7 @@ function MapClass:Update()
 		if self.NorthMarker then
 			self.NorthMarker:SetVisible(false)
 		end
-		for i,v in self.UICorner do
+		for i, v in self.UICorner do
 			v.CornerRadius = GuiBigmap.CornerRadius
 		end
 		MapFrame.MarkerList.Visible = true
@@ -165,27 +173,20 @@ function MapClass:Update()
 	end
 
 	UIScale.Scale = self.mapView.Scale
-	local relativeFocus = Vector2.new( self.mapView.FocusX / MapSettings.Map.Size.X, self.mapView.FocusY / MapSettings.Map.Size.Y )
+	local relativeFocus =
+		Vector2.new(self.mapView.FocusX / MapSettings.Map.Size.X, self.mapView.FocusY / MapSettings.Map.Size.Y)
 	if self.IsMinimap then
 		local rx, ry, rz = Camera.CFrame:ToOrientation()
 		self.Rotation = GuiSettings.RotateWithCamera and math.deg(ry) or 0
 		MapView.RotateFrame.Rotation = self.Rotation
-		
+
 		local Size = self:GetSize(relativeFocus)
-		
-		MapImage.Position = UDim2.new(
-			0, Size.X, 
-			0, Size.Y
-		)
-		
+
+		MapImage.Position = UDim2.new(0, Size.X, 0, Size.Y)
 	else
 		local Size = self:GetSize(relativeFocus)
-		
-		MapImage.Position = MapDragedUDim ~= UDim2.new(0,0,0,0) and MapDragedUDim or 
-			UDim2.new(
-				0, Size.X, 
-				0, Size.Y
-			)
+
+		MapImage.Position = MapDragedUDim ~= UDim2.new(0, 0, 0, 0) and MapDragedUDim or UDim2.new(0, Size.X, 0, Size.Y)
 
 		if self.ToPlayer then
 			self.ToPlayer = false
@@ -196,7 +197,6 @@ function MapClass:Update()
 		MapView.RotateFrame.Rotation = self.Rotation
 	end
 end
-
 
 function MapClass:UpdateMakers()
 	for obj, class in self.Markers do
@@ -212,7 +212,7 @@ function MapClass:UpdateMakersList()
 	local MarkerList = MapFrame.MarkerList
 	local ToDisplay = {}
 
-	for i,v in MarkerList.Holder:GetChildren() do
+	for i, v in MarkerList.Holder:GetChildren() do
 		if v:IsA("Frame") and v.Name ~= "Sample" then
 			v:Destroy()
 		end
@@ -220,10 +220,14 @@ function MapClass:UpdateMakersList()
 
 	for _, class in self.Markers do
 		if self.NorthMarker and class ~= self.NorthMarker then
-			if not ToDisplay[class.Tag] then ToDisplay[class.Tag] = {} end
+			if not ToDisplay[class.Tag] then
+				ToDisplay[class.Tag] = {}
+			end
 			table.insert(ToDisplay[class.Tag], class)
 		elseif not self.NorthMarker then
-			if not ToDisplay[class.Tag] then ToDisplay[class.Tag] = {} end
+			if not ToDisplay[class.Tag] then
+				ToDisplay[class.Tag] = {}
+			end
 			table.insert(ToDisplay[class.Tag], class)
 		end
 	end
@@ -234,7 +238,10 @@ function MapClass:UpdateMakersList()
 		local IconID = MarkerSettings.IconID
 		local instance = MarkerOne.obj
 		local BlipIcon = typeof(IconID) == "string" and BlipIcon.GetIconData(IconID) or nil
-		local ImageId = BlipIcon and BlipIcon.Image or IconID == "PlayerHead" and MarkerOne:PlayerIcon(instance.Name) or tonumber(IconID) and "rbxassetid://"..IconID or nil
+		local ImageId = BlipIcon and BlipIcon.Image
+			or IconID == "PlayerHead" and MarkerOne:PlayerIcon(instance.Name)
+			or tonumber(IconID) and "rbxassetid://" .. IconID
+			or nil
 		local ImageOffset = BlipIcon and BlipIcon.ImageRectOffset or Vector2.new()
 		local ImageSize = BlipIcon and BlipIcon.ImageRectSize or Vector2.new()
 		local NewMarkerList: typeof(MarkerList.Holder.Sample) = MarkerList.Holder.Sample:Clone()
@@ -246,8 +253,8 @@ function MapClass:UpdateMakersList()
 		NewMarkerList.Icon.ImageRectOffset = ImageOffset
 		NewMarkerList.Name = MarkerSettings.DisplayName
 		local Size = getTextSize(
-			MarkerSettings.DisplayName, 
-			Vector2.new(math.huge, MapScreen.AbsoluteSize.Y * (MarkerList.Holder.Sample.Size.Y.Scale * 0.6) ), 
+			MarkerSettings.DisplayName,
+			Vector2.new(math.huge, MapScreen.AbsoluteSize.Y * (MarkerList.Holder.Sample.Size.Y.Scale * 0.6)),
 			MapScreen.AbsoluteSize.Y * (MarkerList.Holder.Sample.Size.Y.Scale * 0.6),
 			NewMarkerList.Label.Font
 		)
@@ -266,18 +273,25 @@ function MapClass:SetFocuseToMarker(Position)
 	local Pos = Position - Center
 	local FocusX = Pos.X + MapSettings.Map.Size.X / 2
 	local FocusY = Pos.Z + MapSettings.Map.Size.Y / 2
-	local r = Vector2.new( FocusX / MapSettings.Map.Size.X, FocusY / MapSettings.Map.Size.Y )
+	local r = Vector2.new(FocusX / MapSettings.Map.Size.X, FocusY / MapSettings.Map.Size.Y)
 	self.MapDragedUDim = Utils.Vector2ToUDim2Offset(MapView.AbsoluteSize * 0.5 - MapImage.AbsoluteSize * r)
 end
 
 function MapClass:AddMarker(Settings, instance)
-	local GuiMarker = Marker(self, Settings, instance, instance.Name:gsub("MinimapMarker","") == Player.Name and "LocalPlayer" or Players:FindFirstChild(instance.Name:gsub("MinimapMarker","")) and "Player" or "Object")
+	local GuiMarker = Marker(
+		self,
+		Settings,
+		instance,
+		instance.Name:gsub("MinimapMarker", "") == Player.Name and "LocalPlayer"
+			or Players:FindFirstChild(instance.Name:gsub("MinimapMarker", "")) and "Player"
+			or "Object"
+	)
 	GuiMarker:UpdatePosition()
 	GuiMarker:UpdateRotation()
 
 	self.Markers[instance] = GuiMarker
 
-	if instance.Name:gsub("MinimapMarker","") == Player.Name then
+	if instance.Name:gsub("MinimapMarker", "") == Player.Name then
 		LocalPlayerMarker = GuiMarker
 	end
 
@@ -293,8 +307,12 @@ function MapClass:RemoveMarker(instance)
 end
 
 function MapClass:AddMarkerTag(map, tag, tagsettings)
-	if self.Connections[`{map}_{tag}_AddedSignal`] then return end
-	if not self.TagMarkers[`{map}_{tag}`] then self.TagMarkers[`{map}_{tag}`] = {} end
+	if self.Connections[`{map}_{tag}_AddedSignal`] then
+		return
+	end
+	if not self.TagMarkers[`{map}_{tag}`] then
+		self.TagMarkers[`{map}_{tag}`] = {}
+	end
 
 	self.Connections[`{map}_{tag}_AddedSignal`] = CollectionService:GetInstanceAddedSignal(tag):Connect(function(obj)
 		local marker = self:AddMarker(tagsettings, obj)
@@ -312,12 +330,13 @@ function MapClass:AddMarkerTag(map, tag, tagsettings)
 		end)
 	end)
 
-	self.Connections[`{map}_{tag}_GetInstanceRemovedSignal`] = CollectionService:GetInstanceRemovedSignal(tag):Connect(function(obj)
-		self:RemoveMarker(obj)
-		self.TagMarkers[`{map}_{tag}`][obj] = nil
-	end)
+	self.Connections[`{map}_{tag}_GetInstanceRemovedSignal`] = CollectionService:GetInstanceRemovedSignal(tag)
+		:Connect(function(obj)
+			self:RemoveMarker(obj)
+			self.TagMarkers[`{map}_{tag}`][obj] = nil
+		end)
 
-	for i,obj in CollectionService:GetTagged(tag) do
+	for i, obj in CollectionService:GetTagged(tag) do
 		local marker = self:AddMarker(tagsettings, obj)
 		marker.Index = i
 		marker.Tag = tag
@@ -335,7 +354,9 @@ function MapClass:AddMarkerTag(map, tag, tagsettings)
 end
 
 function MapClass:RemoveMarkerTag(map: string, tag: string)
-	if self.Connections[`{map}_{tag}_AddedSignal`] == nil then return end
+	if self.Connections[`{map}_{tag}_AddedSignal`] == nil then
+		return
+	end
 
 	self.Connections[`{map}_{tag}_AddedSignal`]:Disconnect()
 	self.Connections[`{map}_{tag}_AddedSignal`] = nil
@@ -343,7 +364,7 @@ function MapClass:RemoveMarkerTag(map: string, tag: string)
 	self.Connections[`{map}_{tag}_GetInstanceRemovedSignal`]:Disconnect()
 	self.Connections[`{map}_{tag}_GetInstanceRemovedSignal`] = nil
 
-	for _,obj in CollectionService:GetTagged(tag) do
+	for _, obj in CollectionService:GetTagged(tag) do
 		self:RemoveMarker(obj)
 	end
 	self.TagMarkers[`{map}_{tag}`] = nil
@@ -358,7 +379,7 @@ function MapClass:SwitchMap(NewMap)
 		self.StoredMarkers[self.CurrentMap] = {}
 	end
 
-	for i,v in self.Markers do
+	for i, v in self.Markers do
 		if self.NorthMarker and v ~= self.NorthMarker then
 			v:SetVisible(false)
 			self.StoredMarkers[self.CurrentMap][i] = v
@@ -395,7 +416,9 @@ function MapClass:Toggle()
 	self.ToPlayer = not self.IsMinimap
 	if not self.IsMinimap then
 		for _, v in Enum.CoreGuiType:GetEnumItems() do
-			if v == Enum.CoreGuiType.All then continue end
+			if v == Enum.CoreGuiType.All then
+				continue
+			end
 			self.CoreGui[v] = StarterGui:GetCoreGuiEnabled(v)
 		end
 		StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
@@ -414,13 +437,17 @@ function MapClass:Drag(input)
 		self.Offset = Vector2.new(delta.X, delta.Y)
 		return newPosition
 	else
-		return UDim2.new(0,0,0,0)
+		return UDim2.new(0, 0, 0, 0)
 	end
 end
 
 function MapClass:init()
-	if self.inited then return end
-	if not RunService:IsRunning() then return end
+	if self.inited then
+		return
+	end
+	if not RunService:IsRunning() then
+		return
+	end
 	local Settings = self.Settings
 
 	self:Create()
@@ -445,7 +472,7 @@ function MapClass:init()
 			Rotate = false,
 			Index = 99,
 			VisibleType = "Minimap",
-		},NorthAtt)
+		}, NorthAtt)
 	end
 
 	self.RunStepped = RunService.RenderStepped:Connect(function(dt)
@@ -453,7 +480,9 @@ function MapClass:init()
 	end)
 
 	self.InputBegan = UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
-		if gameProcessedEvent then return end
+		if gameProcessedEvent then
+			return
+		end
 		if input.KeyCode == self.Settings.Gui.OpenKey then
 			self:Toggle()
 		end
@@ -474,6 +503,9 @@ function MapClass:init()
 end
 
 function MapClass:Zoom(input)
+	if self.IsMinimap then
+		return
+	end
 	local MapFrame = self.MapFrame
 	local MapView = MapFrame.MapView
 	local MapImage = MapView.RotateFrame.MapImage
@@ -487,7 +519,7 @@ function MapClass:Zoom(input)
 	local newScale = math.clamp(oldScale + (zoomFactor * num), maxScale, minScale)
 	local scaleChange = newScale - oldScale
 
-	local focus = UDim2.fromOffset(  -- point before zoom
+	local focus = UDim2.fromOffset( -- point before zoom
 		input.Position.X - MapImage.AbsolutePosition.X,
 		input.Position.Y - MapImage.AbsolutePosition.Y
 	)
@@ -497,7 +529,8 @@ function MapClass:Zoom(input)
 		-(focus.Y.Offset * scaleChange) / (newScale - scaleChange)
 	)
 	self.mapView.Scale = newScale
-	self.MapDragedUDim = (self.MapDragedUDim ~= UDim2.new(0,0,0,0) and self.MapDragedUDim or MapView.Position) + translate
+	self.MapDragedUDim = (self.MapDragedUDim ~= UDim2.new(0, 0, 0, 0) and self.MapDragedUDim or MapView.Position)
+		+ translate
 end
 
 function MapClass:HandleEvent(Event, Callback)
@@ -531,181 +564,236 @@ function MapClass:Create()
 			end
 		end)
 
-		return ReactRoblox.createPortal(React.createElement("ScreenGui", {
-			Name = "RoRenderMinimap",
-			ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
-			ResetOnSpawn = false,
-			DisplayOrder = GuiSettings.ZIndex,
-			IgnoreGuiInset = true,
-			ScreenInsets = Enum.ScreenInsets.None
-		}, {
-			MapFrame = React.createElement("Frame", {
-				Size = GuiSettings.Size,
-				Position = GuiSettings.Position,
-				AnchorPoint = GuiSettings.AnchorPoint,
-				BackgroundColor3 = GuiSettings.BackgroundColor,
+		local IsImages = MapData.Map.Images
+		local MapImageEle
+
+		if IsImages then
+			local ValidSizes = {[2*2] = 1/2,[3*3] = 1/3, [4*4] = 1/4, [5*5] = 1/5, [6*6] = 1/6, [7*7] = 1/7, [8*8] = 1/8}
+			print("ValidSizes", ValidSizes)
+			local Size = ValidSizes[#IsImages]
+			assert(Size, "Invalid number of images for minimap: " .. #IsImages)
+			local ImagesEle = {
+				UIGridLayout = React.createElement("UIGridLayout", {
+					CellSize = UDim2.new(Size, 2, Size, 2),
+					CellPadding = UDim2.fromOffset(-1, -1),
+					SortOrder = Enum.SortOrder.LayoutOrder,
+				}),
+			}
+			local Children = {
+				UIAspectRatioConstraint = React.createElement("UIAspectRatioConstraint"),
+				UIScale = React.createElement("UIScale", {
+					Scale = GuiSettings.Zoom.Minimap,
+					ref = UIScale,
+				}),
+				Images = React.createElement("Frame", {
+					BackgroundTransparency = 1,
+					Size = UDim2.fromScale(1, 1),
+				}, ImagesEle),
+			}
+
+			for i, v in MapData.Map.Images do
+				ImagesEle[`ImageLabel_{i}`] = React.createElement("ImageLabel", {
+					BackgroundTransparency = 1,
+					Image = `rbxassetid://{v.ImageId}`,
+					LayoutOrder = v.LayoutOrder,
+				})
+			end
+			
+			MapImageEle = React.createElement("Frame", {
+				BackgroundTransparency = 1,
+				Size = UDim2.fromOffset(MapData.Map.Size.X, MapData.Map.Size.Y),
+				ref = MapImage,
+			}, Children)
+		else
+			MapImageEle = React.createElement("ImageLabel", {
+				BackgroundTransparency = 1,
+				Size = UDim2.fromOffset(MapData.Map.Size.X, MapData.Map.Size.Y),
+				Image = `rbxassetid://{MapData.Map.ImageId}`,
+				ref = MapImage,
 			}, {
-				UICorner = React.createElement("UICorner", {
-					CornerRadius = self.Settings.Gui.CornerRadius,
-					ref = UICorner3
-				}),	
-				UIAspectRatioConstraint = React.createElement("UIAspectRatioConstraint", {
-					AspectRatio = GuiSettings.AspectRatio
+				UIAspectRatioConstraint = React.createElement("UIAspectRatioConstraint"),
+				UIScale = React.createElement("UIScale", {
+					Scale = GuiSettings.Zoom.Minimap,
+					ref = UIScale,
 				}),
-				UIStroke = React.createElement("UIStroke", {
-					Thickness = 1,
-					Color = GuiSettings.BorderColor,
-				}),
-				MarkerList = React.createElement("Frame", {
-					BackgroundTransparency = 1,
-					Size = UDim2.fromScale(.3, .85),
-					Position = UDim2.fromScale(.975, .075),
-					AnchorPoint = Vector2.new(1, 0),
-					Visible = false,
-					ClipsDescendants = true,
-				}, {
-					Holder = React.createElement("ScrollingFrame", {
-						Size = UDim2.fromScale(.2, 1),
-						Position = UDim2.fromScale(1, 0),
-						AnchorPoint = Vector2.new(1, 0),
-						BackgroundTransparency = 1,
-						ClipsDescendants = false,
-						CanvasSize = UDim2.new(),
-						ScrollingDirection = Enum.ScrollingDirection.Y
-					}, {
-						UIListLayout = React.createElement("UIListLayout",{
-							Padding = UDim.new(0, 5),
-							SortOrder = Enum.SortOrder.LayoutOrder,
-							HorizontalAlignment = Enum.HorizontalAlignment.Right,
-							VerticalAlignment = Enum.VerticalAlignment.Top,
-						}),
-						Sample = React.createElement("Frame", {
-							BackgroundTransparency = .5,
-							BorderSizePixel = 0,
-							BackgroundColor3 = Color3.new(),
-							Size = UDim2.fromScale(.019, .05),
-							AutomaticSize = Enum.AutomaticSize.X,
-							Visible = false,
-						}, {
-							UIListLayout = React.createElement("UIListLayout",{
-								Padding = UDim.new(0, 10),
-								SortOrder = Enum.SortOrder.LayoutOrder,
-								FillDirection = Enum.FillDirection.Horizontal,
-								HorizontalAlignment = Enum.HorizontalAlignment.Right,
-								VerticalAlignment = Enum.VerticalAlignment.Center
-							}),
-							Icon = React.createElement("ImageLabel", {
-								BackgroundTransparency = 1,
-								Size = UDim2.fromScale(.9, .9),
-								LayoutOrder = 5,
-							},{
-								UIAspectRatioConstraint = React.createElement("UIAspectRatioConstraint")
-							}),
-							UIPadding = React.createElement("UIPadding", {
-								PaddingLeft = UDim.new(0, 10),
-							}),
-							Label = React.createElement("TextLabel", {
-								LayoutOrder = 4,
-								BackgroundTransparency = 1,
-								Size = UDim2.fromScale(0, .7),
-								AutomaticSize = Enum.AutomaticSize.X,
-								TextScaled = true,
-								TextXAlignment = Enum.TextXAlignment.Right,
-								Font = MinimapSettings.Fonts.secondaryFont,
-								TextColor3 = Color3.fromRGB(255, 255, 255),
-								TextStrokeColor3 = Color3.fromRGB(255, 255, 255),
-								TextStrokeTransparency = 0,
-							})
-						})
-					})
-				}),
-				MapView = React.createElement("CanvasGroup", {
-					Size = UDim2.fromScale(1, 1),
-					Position = UDim2.fromScale(.5, .5),
-					AnchorPoint = Vector2.new(.5, .5),
-					BackgroundTransparency = 1,
-					Active = true,
-					Selectable = true,
-					[React.Event.InputBegan] = function(rbx, input: InputObject)
-						if Utils.IsMainInputPressed(input) and self.IsMinimap then
-							self:Toggle()
-						end
+			})
+		end
 
-						if Utils.IsMainInputPressed(input) and not self.IsMinimap and MapImage.current then
-							self.Dragging = true
-							self.dragStart = input.Position
-							self.startPos = MapImage.current.Position
-						end
-					end,
-					[React.Event.InputChanged] = function(rbx, input: InputObject)
-						if (input.UserInputType == Enum.UserInputType.MouseWheel or input.KeyCode == Enum.KeyCode.ButtonR2 or input.KeyCode == Enum.KeyCode.ButtonL2) and UIScale.current and MapImage.current then
-							if input.KeyCode == Enum.KeyCode.ButtonR2 then
-								input.Position += Vector3.new(0, 0, -1)
-								self:Zoom(input)
-							elseif input.KeyCode == Enum.KeyCode.ButtonL2 then
-								input.Position += Vector3.new(0, 0, 1)
-								self:Zoom(input)
-							else
-								self:Zoom(input)
-							end
-						end
-
-						if Utils.IsMainInputMove(input) and not self.IsMinimap and MapImage.current then
-							if self.Dragging then
-								local newUDim = self:Drag(input)
-								self.MapDragedUDim = newUDim
-
-								local relativePostion = Vector2.new(newUDim.X.Offset, newUDim.Y.Offset)
-								local Max = rbx.AbsoluteSize * Vector2.new(0.5,0.5)
-								local Min = Max - MapImage.current.AbsoluteSize
-								local clampedX = math.clamp(relativePostion.X, Min.X, Max.X)
-								local clampedY = math.clamp(relativePostion.Y, Min.Y, Max.Y)
-								self.MapDragedUDim = UDim2.fromOffset(clampedX, clampedY)
-							end
-						end
-					end,
-					[React.Event.InputEnded] = function(rbx, input: InputObject)
-						if Utils.IsMainInputPressed(input) and not self.IsMinimap then
-							self.Dragging = false
-						end
-					end,
+		return ReactRoblox.createPortal(
+			React.createElement("ScreenGui", {
+				Name = "RoRenderMinimap",
+				ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+				ResetOnSpawn = false,
+				DisplayOrder = GuiSettings.ZIndex,
+				IgnoreGuiInset = true,
+				ScreenInsets = Enum.ScreenInsets.None,
+			}, {
+				MapFrame = React.createElement("Frame", {
+					Size = GuiSettings.Size,
+					Position = GuiSettings.Position,
+					AnchorPoint = GuiSettings.AnchorPoint,
+					BackgroundColor3 = GuiSettings.BackgroundColor,
 				}, {
 					UICorner = React.createElement("UICorner", {
 						CornerRadius = self.Settings.Gui.CornerRadius,
-						ref = UICorner2
+						ref = UICorner3,
 					}),
-					RotateFrame = React.createElement("Frame", {
+					UIAspectRatioConstraint = React.createElement("UIAspectRatioConstraint", {
+						AspectRatio = GuiSettings.AspectRatio,
+					}),
+					UIStroke = React.createElement("UIStroke", {
+						Thickness = 1,
+						Color = GuiSettings.BorderColor,
+					}),
+					MarkerList = React.createElement("Frame", {
 						BackgroundTransparency = 1,
-						Size = UDim2.fromScale(1, 1),
+						Size = UDim2.fromScale(0.3, 0.85),
+						Position = UDim2.fromScale(0.975, 0.075),
+						AnchorPoint = Vector2.new(1, 0),
+						Visible = false,
+						ClipsDescendants = true,
 					}, {
-						MapImage = React.createElement("ImageLabel", {
+						Holder = React.createElement("ScrollingFrame", {
+							Size = UDim2.fromScale(0.2, 1),
+							Position = UDim2.fromScale(1, 0),
+							AnchorPoint = Vector2.new(1, 0),
 							BackgroundTransparency = 1,
-							Size = UDim2.fromOffset(MapData.Map.Size.X, MapData.Map.Size.Y),
-							Image = `rbxassetid://{MapData.Map.ImageId}`,
-							ref = MapImage,
+							ClipsDescendants = false,
+							CanvasSize = UDim2.new(),
+							ScrollingDirection = Enum.ScrollingDirection.Y,
 						}, {
-							UIAspectRatioConstraint = React.createElement("UIAspectRatioConstraint"),
-							UIScale = React.createElement("UIScale", {
-								Scale = GuiSettings.Zoom.Minimap,
-								ref = UIScale
+							UIListLayout = React.createElement("UIListLayout", {
+								Padding = UDim.new(0, 5),
+								SortOrder = Enum.SortOrder.LayoutOrder,
+								HorizontalAlignment = Enum.HorizontalAlignment.Right,
+								VerticalAlignment = Enum.VerticalAlignment.Top,
+							}),
+							Sample = React.createElement("Frame", {
+								BackgroundTransparency = 0.5,
+								BorderSizePixel = 0,
+								BackgroundColor3 = Color3.new(),
+								Size = UDim2.fromScale(0.019, 0.05),
+								AutomaticSize = Enum.AutomaticSize.X,
+								Visible = false,
+							}, {
+								UIListLayout = React.createElement("UIListLayout", {
+									Padding = UDim.new(0, 10),
+									SortOrder = Enum.SortOrder.LayoutOrder,
+									FillDirection = Enum.FillDirection.Horizontal,
+									HorizontalAlignment = Enum.HorizontalAlignment.Right,
+									VerticalAlignment = Enum.VerticalAlignment.Center,
+								}),
+								Icon = React.createElement("ImageLabel", {
+									BackgroundTransparency = 1,
+									Size = UDim2.fromScale(0.9, 0.9),
+									LayoutOrder = 5,
+								}, {
+									UIAspectRatioConstraint = React.createElement("UIAspectRatioConstraint"),
+								}),
+								UIPadding = React.createElement("UIPadding", {
+									PaddingLeft = UDim.new(0, 10),
+								}),
+								Label = React.createElement("TextLabel", {
+									LayoutOrder = 4,
+									BackgroundTransparency = 1,
+									Size = UDim2.fromScale(0, 0.7),
+									AutomaticSize = Enum.AutomaticSize.X,
+									TextScaled = true,
+									TextXAlignment = Enum.TextXAlignment.Right,
+									Font = MinimapSettings.Fonts.secondaryFont,
+									TextColor3 = Color3.fromRGB(255, 255, 255),
+									TextStrokeColor3 = Color3.fromRGB(255, 255, 255),
+									TextStrokeTransparency = 0,
+								}),
 							}),
 						}),
-					})
-				}),
-				MarkerView = React.createElement("ViewportFrame", {
-					Size = UDim2.fromScale(1, 1),
-					Position = UDim2.fromScale(.5, .5),
-					AnchorPoint = Vector2.new(.5, .5),
-					BackgroundTransparency = 1,
-					ZIndex = 2
-				},{
-					UICorner = React.createElement("UICorner", {
-						CornerRadius = self.Settings.Gui.CornerRadius,
-						ref = UICorner3
-					}),	
+					}),
+					MapView = React.createElement("CanvasGroup", {
+						Size = UDim2.fromScale(1, 1),
+						Position = UDim2.fromScale(0.5, 0.5),
+						AnchorPoint = Vector2.new(0.5, 0.5),
+						BackgroundTransparency = 1,
+						Active = true,
+						Selectable = true,
+						[React.Event.InputBegan] = function(rbx, input: InputObject)
+							if Utils.IsMainInputPressed(input) and self.IsMinimap then
+								self:Toggle()
+							end
+
+							if Utils.IsMainInputPressed(input) and not self.IsMinimap and MapImage.current then
+								self.Dragging = true
+								self.dragStart = input.Position
+								self.startPos = MapImage.current.Position
+							end
+						end,
+						[React.Event.InputChanged] = function(rbx, input: InputObject)
+							if
+								(
+									input.UserInputType == Enum.UserInputType.MouseWheel
+									or input.KeyCode == Enum.KeyCode.ButtonR2
+									or input.KeyCode == Enum.KeyCode.ButtonL2
+								)
+								and UIScale.current
+								and MapImage.current
+							then
+								if input.KeyCode == Enum.KeyCode.ButtonR2 then
+									input.Position += Vector3.new(0, 0, -1)
+									self:Zoom(input)
+								elseif input.KeyCode == Enum.KeyCode.ButtonL2 then
+									input.Position += Vector3.new(0, 0, 1)
+									self:Zoom(input)
+								else
+									self:Zoom(input)
+								end
+							end
+
+							if Utils.IsMainInputMove(input) and not self.IsMinimap and MapImage.current then
+								if self.Dragging then
+									local newUDim = self:Drag(input)
+									self.MapDragedUDim = newUDim
+
+									local relativePostion = Vector2.new(newUDim.X.Offset, newUDim.Y.Offset)
+									local Max = rbx.AbsoluteSize * Vector2.new(0.5, 0.5)
+									local Min = Max - MapImage.current.AbsoluteSize
+									local clampedX = math.clamp(relativePostion.X, Min.X, Max.X)
+									local clampedY = math.clamp(relativePostion.Y, Min.Y, Max.Y)
+									self.MapDragedUDim = UDim2.fromOffset(clampedX, clampedY)
+								end
+							end
+						end,
+						[React.Event.InputEnded] = function(rbx, input: InputObject)
+							if Utils.IsMainInputPressed(input) and not self.IsMinimap then
+								self.Dragging = false
+							end
+						end,
+					}, {
+						UICorner = React.createElement("UICorner", {
+							CornerRadius = self.Settings.Gui.CornerRadius,
+							ref = UICorner2,
+						}),
+						RotateFrame = React.createElement("Frame", {
+							BackgroundTransparency = 1,
+							Size = UDim2.fromScale(1, 1),
+						}, {
+							MapImage = MapImageEle,
+						}),
+					}),
+					MarkerView = React.createElement("ViewportFrame", {
+						Size = UDim2.fromScale(1, 1),
+						Position = UDim2.fromScale(0.5, 0.5),
+						AnchorPoint = Vector2.new(0.5, 0.5),
+						BackgroundTransparency = 1,
+						ZIndex = 2,
+					}, {
+						UICorner = React.createElement("UICorner", {
+							CornerRadius = self.Settings.Gui.CornerRadius,
+							ref = UICorner3,
+						}),
+					}),
 				}),
 			}),
-		}), Player:WaitForChild("PlayerGui"))
+			Player:WaitForChild("PlayerGui")
+		)
 	end
 	--ref
 
@@ -732,7 +820,7 @@ return function(Settings: Types.Settings): Types.MapClass
 	self.mapView = {
 		FocusX = 0,
 		FocusY = 0,
-		Scale = self.Settings.Gui.Zoom.Minimap
+		Scale = self.Settings.Gui.Zoom.Minimap,
 	}
 	self.Connections = {}
 	self.Events = {}

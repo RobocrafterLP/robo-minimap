@@ -97,13 +97,14 @@ function Marker:UpdatePosition()
 			Visible = true
 			if MapData.NorthMarker and MapData.NorthMarker == self then
 				Pos = MapData.Convert:ToMap(rotatedVector3)
-				Pos = BorderSnap:ClampToBorder(Pos, MapData.MapFrame.MarkerView.AbsoluteSize, MapData.Settings.Gui.Minimap.CornerRadius)
+				Pos = BorderSnap:ClampToBorder(Pos, MapData.MapFrame.MarkerView.AbsoluteSize, MapData.Settings.Gui.Minimap.CornerRadius, self.Gui, true)
 			else
-				Pos = BorderSnap:ClampToBorder(self.IDK.AbsolutePosition - MapData.MapFrame.MarkerView.AbsolutePosition, MapData.MapFrame.MarkerView.AbsoluteSize, MapData.Settings.Gui.Minimap.CornerRadius)
+				Pos = BorderSnap:ClampToBorder(self.IDK.AbsolutePosition - MapData.MapFrame.MarkerView.AbsolutePosition, MapData.MapFrame.MarkerView.AbsoluteSize, MapData.Settings.Gui.Minimap.CornerRadius, self.Gui)
 			end
 		else
-			local n = BorderSnap:ClampToBorder(MapData.Convert:ToMap2(newpos), MapData.MapFrame.MarkerView.AbsoluteSize, MapData.Settings.Gui.Minimap.CornerRadius)
-			if n.X ~= Pos.X or n.Y ~= Pos.Y then
+			local n, clamped, out = BorderSnap:ClampToBorder(self.IDK.AbsolutePosition - MapData.MapFrame.MarkerView.AbsolutePosition, MapData.MapFrame.MarkerView.AbsoluteSize, MapData.Settings.Gui.Minimap.CornerRadius, self.Gui)
+			Pos = n
+			if clamped then
 				Visible = false
 			elseif self.Gui.Visible == false then
 				Visible = true
@@ -112,7 +113,7 @@ function Marker:UpdatePosition()
 
 		if obj == Players.LocalPlayer.Character and MapData.IsMinimap then
 			GuiPos = UDim2.fromScale(.5, .5)
-		else	
+		else
 			GuiPos = Utils.Vector2ToUDim2Offset(Pos)
 		end
 	elseif not MapData.IsMinimap and MapData.NorthMarker and (Settings.VisibleType == "Bigmap" or Settings.VisibleType == "Both") then

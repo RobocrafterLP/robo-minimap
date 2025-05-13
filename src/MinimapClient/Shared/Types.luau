@@ -28,15 +28,15 @@ export type MapClass = {
 	mapView: {
 		FocusX: number,
 		FocusY: number,
-		Scale: number
+		Scale: number,
 	},
-	Connections: {RBXScriptConnection?},
-	Events: {[string]: () -> ()?},
-	Markers: {[instance]: MarkerClass?},
+	Connections: { RBXScriptConnection? },
+	Events: { [string]: () -> ()? },
+	Markers: { [instance]: MarkerClass? },
 	TagMarkers: { [string]: { [instance]: MarkerClass }? },
-	UICorner: {UICorner?},
+	UICorner: { UICorner? },
 	StoredMarkers: { [string]: { [instance]: MarkerClass }? },
-	CoreGui: {[Enum.CoreGuiType]: boolean?},
+	CoreGui: { [Enum.CoreGuiType]: boolean? },
 	inited: boolean,
 	CurrentMap: string,
 	Map: MapGui,
@@ -56,12 +56,12 @@ export type MapFrame = Frame & {
 		RotateFrame: Frame & {
 			MapImage: ImageLabel & {
 				UIAspectRatioConstraint: UIAspectRatioConstraint,
-				UIScale: UIScale
-			}
-		}
+				UIScale: UIScale,
+			},
+		},
 	},
 	MarkerView: ViewportFrame & {
-		UICorner: UICorner
+		UICorner: UICorner,
 	},
 	MarkerList: Frame & {
 		Holder: Frame & {
@@ -73,12 +73,12 @@ export type MapFrame = Frame & {
 				},
 				UIPadding: UIPadding,
 				Label: TextLabel,
-			}
-		}
-	}
+			},
+		},
+	},
 }
 export type MapGui = ScreenGui & {
-	MapFrame: MapFrame
+	MapFrame: MapFrame,
 }
 
 export type MarkerClass = {
@@ -117,7 +117,24 @@ export type ConvertPosition = {
 	ToWorld: (self: ConvertPosition, Position: Vector2) -> Vector3,
 	ToMap: (self: ConvertPosition, Position: Vector3) -> Vector2,
 	ToMap2: (self: ConvertPosition, Position: Vector3) -> Vector2,
-	MapData: MapClass
+	MapData: MapClass,
+}
+
+export type MapImage = {
+	Size: Vector2,
+	ImageId: number,
+	Center: Vector2,
+}
+
+export type MapImages = {
+	Size: Vector2,
+	Center: Vector2,
+	Images: {
+		{
+			ImageId: number,
+			LayoutOrder: number,
+		}
+	}
 }
 
 export type Settings = {
@@ -142,7 +159,7 @@ export type Settings = {
 			Parent: string?,
 		},
 		Minimap: {
-			AspectRatio: number ?,
+			AspectRatio: number?,
 			CornerRadius: UDim,
 			AnchorPoint: Vector2,
 			Position: UDim2,
@@ -167,18 +184,14 @@ export type Settings = {
 			BigMap: number,
 			Minimap: number,
 		},
-		StartMap: string
+		StartMap: string,
 	},
-	MapData: {[string]: MapData}
+	MapData: { [string]: MapData },
 }
 
 export type MapData = {
-	Map: {
-		Size: Vector2,
-		ImageId: number,
-		Center: Vector2,
-	},
-	Tags: {Tag?}
+	Map: MapImage | MapImages,
+	Tags: { Tag? },
 }
 
 export type Tag = {
@@ -194,7 +207,7 @@ export type Tag = {
 	SnapToBorder: boolean,
 	Rotate: boolean,
 	Index: number,
-	VisibleType: "Both" | "Minimap" | "Bigmap"
+	VisibleType: "Both" | "Minimap" | "Bigmap",
 	--Stack: boolean,
 }
 

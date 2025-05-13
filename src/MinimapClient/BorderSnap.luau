@@ -70,13 +70,18 @@ local function clamp(pos, center, radius, corner)
     return pos
 end
 
-function BorderSnap:ClampToBorder(position, absoluteSize, cornerRadius)
+local function IsInside(pos, absoluteSize, marker)
+    local newpos = pos + (marker.AbsoluteSize * marker.AnchorPoint)
+    return newpos.X > 0 and newpos.Y > 0 and newpos.X < absoluteSize.X and newpos.Y < absoluteSize.Y
+end
+
+function BorderSnap:ClampToBorder(position, absoluteSize, cornerRadius, marker, always)
     --local pos = Vector2.new(math.clamp(position.X, 0, absoluteSize.X),math.clamp(position.Y, 0, absoluteSize.Y))
     local pos = position
-
+    
     local radius, pos1, pos2, pos3, pos4 = getRadius(cornerRadius, absoluteSize)
     local corner = check(pos, pos1, pos2, pos3, pos4)
-
+    
     if corner == "left-top" then
         pos = clamp(pos, pos1, radius, corner)
     elseif corner == "left-bottom" then
@@ -86,10 +91,9 @@ function BorderSnap:ClampToBorder(position, absoluteSize, cornerRadius)
     elseif corner == "right-bottom" then
         pos = clamp(pos, pos4, radius, corner)
     end
-
-    pos = Vector2.new(math.clamp(pos.X, 0, absoluteSize.X), math.clamp(pos.Y, 0, absoluteSize.Y))
-
-    return pos
+    
+    pos = Vector2.new(math.clamp(pos.X, 0, absoluteSize.X),math.clamp(pos.Y, 0, absoluteSize.Y))
+	return pos, pos ~= position
 end
 
 return BorderSnap
